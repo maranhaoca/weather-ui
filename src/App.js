@@ -3,10 +3,13 @@ import logo from './logo.svg';
 import './App.css';
 import { SearchBar } from './components/SearchBar.js';
 import CityList from './data/city.list.json'
+import citiesWithinCountry from './data/citiesWithinCountryApi';
 
 function App() {
-
-  const ptCities = CityList.filter((city) => city.country === 'PT')    
+  console.log("livia1")
+  const ptCities = citiesWithinCountry("IN")
+  console.log("livia3")
+  console.log(ptCities)
 
   return (
     <div className="App">
