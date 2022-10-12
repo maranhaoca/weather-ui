@@ -7,52 +7,92 @@ export function SearchBar({ placeholder, data }) {
     const [filteredData, setFilteredData] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
 
-    const onHandleChange = (event) => {
-        const newSearchTerm = event.target.value
-        setSearchTerm(newSearchTerm)
+    const onChange = (event) => {
+        setSearchTerm(event.target.value)
 
-        const newFilteredData = data.filter((value) => {
-            return value.name.toLowerCase().startsWith(newSearchTerm.toLowerCase())
+        const filteredData = data
+            .filter((value) => { return (
+                value.name.toLocaleLowerCase().startsWith(searchTerm.toLocaleLowerCase())
+            )})
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((value, index) => { return (
+                <div
+                    className="dropdown-row"
+                    onClick={() => onSearch(value.name)}
+                    key={index}
+                >
+                    {value.name}
+                </div>
+            )})
+
+        searchTerm ? setFilteredData(filteredData) : setFilteredData([])
+
+        /* const newFilteredData = data.filter((value) => {
+            return value.name.toLowerCase().startsWith(searchTerm.toLowerCase())
         }).sort((a, b) => a.name.localeCompare(b.name))
 
-        newSearchTerm === '' ? setFilteredData([]) : setFilteredData(newFilteredData)
+        searchTerm ? setFilteredData([]) : setFilteredData(newFilteredData) */
     }
 
-    const onClearInput = () => {
-        setFilteredData([])
+    const onClearInput = () => {        
         setSearchTerm('')
+        setFilteredData([])
     }
 
     const onSearch= (searchTerm) => {
-        // aqui entra a API
-        console.log(searchTerm)
+        setSearchTerm(searchTerm)
+        setFilteredData([])
+        console.log('Selected: ', searchTerm)
     }
     
     return (
         <div className="search">
+            <h1>Weather Forecast</h1>
             <div className="searchInputs">
                 <input
-                type="text"
-                placeholder={placeholder}
-                value={searchTerm}
-                onChange={onHandleChange}
+                    type="text"
+                    placeholder={placeholder}
+                    value={searchTerm}
+                    onChange={onChange}
                 />
                 <button className="searchIcon" >
-                    {filteredData.length === 0 ? (
+                    {searchTerm.length === 0 ? (
                         <SearchIcon />
                         ) : (
                         <CloseIcon id="clearBtn" onClick={onClearInput} />)}
                 </button>
             </div>
-            {filteredData.length !== 0 && (
-            <div className="dataResult">
-                {filteredData.map((value) => (
-                    <a className="dataItem" onClick={() => onSearch(value.name)}>
-                        <p>{value.name}</p>
-                    </a>
-                    ))}
-            </div>
-            )}
+                {filteredData}
+                {/* {data
+                    .filter((value) => { 
+                        const searchTermLowerCase = searchTerm.toLocaleLowerCase()
+                        const nameLowerCase = value.name.toLocaleLowerCase()
+
+                        return (
+                        searchTerm &&
+                        nameLowerCase.startsWith(searchTermLowerCase) &&
+                        value.name !== searchTerm
+                    )})
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((value, index) => { return (
+                        <div
+                            className="dropdown-row"
+                            onClick={() => onSearch(value.name)}
+                            key={index}
+                        >
+                            {value.name}
+                        </div>
+                    )})
+                } */}
+                {/* {filteredData.length !== 0 && (
+                    <div className="dataResult">
+                        {filteredData.map((value, index) => (
+                            <a className="dataItem" onClick={() => onSearch(value.name)} key={index}>
+                                <p>{value.name}</p>
+                            </a>
+                            ))}
+                    </div>
+                )} */}
         </div>
     )
 }
